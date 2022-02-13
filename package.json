@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/NickTaporuk/node-red-contrib-dynamic-file-path.git"
   },
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "A simple node that generate a file by dynamic file path",
   "main": "dynamic-file-path.js",
   "scripts": {

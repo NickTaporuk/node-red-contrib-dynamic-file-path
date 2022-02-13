@@ -1,29 +1,34 @@
-
-<script type="text/html" data-template-name="file">
+<script type="text/html" data-template-name="dynamic-file">
     <div class="form-row node-input-filename">
-        <label for="node-input-filename"><i class="fa fa-file"></i> <span data-i18n="file.label.filename"></span></label>
+        <label for="node-input-filename"><i class="fa fa-file"></i> <span
+                data-i18n="dynamic-file.label.filename"></span></label>
         <input id="node-input-filename" type="text">
     </div>
     <div class="form-row">
-        <label for="node-input-overwriteFile"><i class="fa fa-random"></i> <span data-i18n="file.label.action"></span></label>
+        <label for="node-input-overwriteFile"><i class="fa fa-random"></i> <span
+                data-i18n="dynamic-file.label.action"></span></label>
         <select type="text" id="node-input-overwriteFile" style="width: 250px;">
-            <option value="false" data-i18n="file.action.append"></option>
-            <option value="true" data-i18n="file.action.overwrite"></option>
-            <option value="delete" data-i18n="file.action.delete"></option>
+            <option value="false" data-i18n="dynamic-file.action.append"></option>
+            <option value="true" data-i18n="dynamic-file.action.overwrite"></option>
+            <option value="delete" data-i18n="dynamic-file.action.delete"></option>
         </select>
     </div>
     <div class="form-row form-row-file-write-options">
         <label>&nbsp;</label>
-        <input type="checkbox" id="node-input-appendNewline" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-appendNewline" style="width: 70%;"><span data-i18n="file.label.addnewline"></span></label>
+        <input type="checkbox" id="node-input-appendNewline"
+               style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-appendNewline" style="width: 70%;"><span
+                data-i18n="dynamic-file.label.addnewline"></span></label>
     </div>
     <div class="form-row form-row-file-write-options">
         <label>&nbsp;</label>
-        <input type="checkbox" id="node-input-createDir" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-createDir" style="width: 70%;"><span data-i18n="file.label.createdir"></span></label>
+        <input type="checkbox" id="node-input-createDir"
+               style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-createDir" style="width: 70%;"><span data-i18n="dynamic-file.label.createdir"></span></label>
     </div>
     <div class="form-row form-row-file-encoding">
-        <label for="node-input-encoding"><i class="fa fa-flag"></i> <span data-i18n="file.label.encoding"></span></label>
+        <label for="node-input-encoding"><i class="fa fa-flag"></i> <span
+                data-i18n="dynamic-file.label.encoding"></span></label>
         <select type="text" id="node-input-encoding" style="width: 250px;">
         </select>
     </div>
@@ -31,13 +36,13 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
     </div>
-    <div class="form-tips"><span data-i18n="file.tip"></span></div>
+    <div class="form-tips"><span data-i18n="dynamic-file.tip"></span></div>
 </script>
 
 <script type="text/javascript">
-    (function(){
+    (function () {
         var encodings = [
-            [ "file.encoding.native",
+            ["dynamic-file.encoding.native",
                 "utf8",
                 "ucs2",
                 "utf-16le",
@@ -46,33 +51,33 @@
                 "base64",
                 "hex"
             ],
-            [ "file.encoding.unicode",
+            ["dynamic-file.encoding.unicode",
                 "utf-16be",
             ],
-            [ "file.encoding.japanese",
+            ["dynamic-file.encoding.japanese",
                 "Shift_JIS",
                 "Windows-31j",
                 "Windows932",
                 "EUC-JP"
             ],
-            [ "file.encoding.chinese",
+            ["dynamic-file.encoding.chinese",
                 "GB2312",
                 "GBK",
                 "GB18030",
                 "Windows936",
                 "EUC-CN"
             ],
-            [ "file.encoding.korean",
+            ["dynamic-file.encoding.korean",
                 "KS_C_5601",
                 "Windows949",
                 "EUC-KR"
             ],
-            [ "file.encoding.taiwan",
+            ["dynamic-file.encoding.taiwan",
                 "Big5",
                 "Big5-HKSCS",
                 "Windows950"
             ],
-            [ "file.encoding.windows",
+            ["dynamic-file.encoding.windows",
                 "cp874",
                 "cp1250",
                 "cp1251",
@@ -84,7 +89,7 @@
                 "cp1257",
                 "cp1258"
             ],
-            [ "file.encoding.iso",
+            ["dynamic-file.encoding.iso",
                 "ISO-8859-1",
                 "ISO-8859-2",
                 "ISO-8859-3",
@@ -102,7 +107,7 @@
                 "ISO-8859-15",
                 "ISO-8859-16"
             ],
-            [ "file.encoding.ibm",
+            ["dynamic-file.encoding.ibm",
                 "cp437",
                 "cp737",
                 "cp775",
@@ -127,7 +132,7 @@
                 "cp1162",
                 "cp1163"
             ],
-            [ "file.encoding.mac",
+            ["dynamic-file.encoding.mac",
                 "maccroatian",
                 "maccyrillic",
                 "macgreek",
@@ -140,13 +145,13 @@
                 "maccenteuro",
                 "macintosh"
             ],
-            [ "file.encoding.koi8",
+            ["dynamic-file.encoding.koi8",
                 "koi8-r",
                 "koi8-u",
                 "koi8-ru",
                 "koi8-t"
             ],
-            [ "file.encoding.misc",
+            ["dynamic-file.encoding.misc",
                 "armscii8",
                 "rk1048",
                 "tcvn",
@@ -161,45 +166,45 @@
             ]
         ];
 
-        RED.nodes.registerType('file',{
+        RED.nodes.registerType('dynamic-file', {
             category: 'storage',
             defaults: {
-                name: {value:""},
-                filename: {value:""},
-                appendNewline: {value:true},
-                createDir: {value:false},
-                overwriteFile: {value:"false"},
-                encoding: {value:"none"}
+                name: {value: ""},
+                filename: {value: ""},
+                appendNewline: {value: true},
+                createDir: {value: false},
+                overwriteFile: {value: "false"},
+                encoding: {value: "none"}
             },
-            color:"BurlyWood",
-            inputs:1,
-            outputs:1,
+            color: "BurlyWood",
+            inputs: 1,
+            outputs: 1,
             icon: "file-out.svg",
-            label: function() {
+            label: function () {
                 if (this.overwriteFile === "delete") {
-                    return this.name||this._("file.label.deletelabel",{file:this.filename});
+                    return this.name || this._("dynamic-file.label.deletelabel", {file: this.filename});
                 } else {
-                    return this.name||this.filename||this._("file.label.write");
+                    return this.name || this.filename || this._("dynamic-file.label.write");
                 }
             },
-            paletteLabel: RED._("node-red:file.label.write"),
-            labelStyle: function() {
-                return this.name?"node_label_italic":"";
+            paletteLabel: RED._("node-red:dynamic-file.label.write"),
+            labelStyle: function () {
+                return this.name ? "node_label_italic" : "";
             },
-            oneditprepare: function() {
+            oneditprepare: function () {
                 var node = this;
                 var encSel = $("#node-input-encoding");
-                var label = node._("file.encoding.none");
+                var label = node._("dynamic-file.encoding.none");
                 $("<option/>", {
                     value: "none",
                     label: label
                 }).text(label).appendTo(encSel);
                 $("<option/>", {
                     value: "setbymsg",
-                    label: node._("file.encoding.setbymsg")
+                    label: node._("dynamic-file.encoding.setbymsg")
                 }).text(label).appendTo(encSel);
-                encodings.forEach(function(item) {
-                    if(Array.isArray(item)) {
+                encodings.forEach(function (item) {
+                    if (Array.isArray(item)) {
                         var group = $("<optgroup/>", {
                             label: node._(item[0])
                         }).appendTo(encSel);
@@ -210,8 +215,7 @@
                                 label: enc
                             }).text(enc).appendTo(group);
                         }
-                    }
-                    else {
+                    } else {
                         $("<option/>", {
                             value: item,
                             label: item
@@ -219,95 +223,13 @@
                     }
                 });
                 encSel.val(node.encoding);
-                $("#node-input-overwriteFile").on("change",function() {
+                $("#node-input-overwriteFile").on("change", function () {
                     if (this.value === "delete") {
                         $(".form-row-file-write-options").hide();
                         $(".form-row-file-encoding").hide();
                     } else {
                         $(".form-row-file-write-options").show();
                         $(".form-row-file-encoding").show();
-                    }
-                });
-            }
-        });
-
-        RED.nodes.registerType('file in',{
-            category: 'storage',
-            defaults: {
-                name: {value:""},
-                filename: {value:""},
-                format: {value:"utf8"},
-                chunk: {value:false},
-                sendError: {value: false},
-                encoding: {value: "none"},
-                allProps: {value: false}
-            },
-            color:"BurlyWood",
-            inputs:1,
-            outputs:1,
-            outputLabels: function(i) {
-                var l;
-                if (this.format === "utf8") {
-                    l = "file.label.utf8String";
-                } else if (this.format === "lines") {
-                    l = "file.label.utf8String_plural";
-                } else if (this.format === "stream") {
-                    l = "file.label.binaryBuffer_plural";
-                } else {
-                    l = "file.label.binaryBuffer";
-                }
-                return this._(l);
-            },
-            icon: "file-in.svg",
-            label: function() {
-                return this.name||this.filename||this._("file.label.read");
-            },
-            paletteLabel: RED._("node-red:file.label.read"),
-            labelStyle: function() {
-                return this.name?"node_label_italic":"";
-            },
-            oneditprepare: function() {
-                var node = this;
-                var encSel = $("#node-input-encoding");
-                var label = node._("file.encoding.none");
-                $("<option/>", {
-                    value: "none",
-                    label: label
-                }).text(label).appendTo(encSel);
-                encodings.forEach(function(item) {
-                    if(Array.isArray(item)) {
-                        var group = $("<optgroup/>", {
-                            label: node._(item[0])
-                        }).appendTo(encSel);
-                        for (var i = 1; i < item.length; i++) {
-                            var enc = item[i];
-                            $("<option/>", {
-                                value: enc,
-                                label: enc
-                            }).text(enc).appendTo(group);
-                        }
-                    }
-                    else {
-                        $("<option/>", {
-                            value: item,
-                            label: item
-                        }).text(item).appendTo(encSel);
-                    }
-                });
-                encSel.val(node.encoding);
-                $("#node-input-format").on("change",function() {
-                    var format = $("#node-input-format").val();
-                    if ((format === "utf8") || (format === "lines")) {
-                        $("#encoding-spec").show();
-                    }
-                    else {
-                        $("#encoding-spec").hide();
-                    }
-                    if ((format === "lines") || (format === "stream")) {
-                        $("#file-allprops").show();
-                    }
-                    else {
-                        $("#file-allprops").hide();
                     }
                 });
             }
