@@ -1,0 +1,16 @@
+{
+  "name": "@nikolay_kuropatkin/node-red-contrib-dynamic-file-path",
+  "node-red": {
+    "nodes": {
+      "dynamic-file-path": "dynamic-file-path.js"
+    }
+  },
+  "version": "0.0.1",
+  "description": "A simple node that generate a file by dynamic file path",
+  "main": "dynamic-file-path.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mykola Kuropatkin",
+  "license": "MIT"
+}
