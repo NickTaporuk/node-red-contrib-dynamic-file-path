@@ -12,7 +12,7 @@
   "keywords": [
     "node-red"
   ],
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A simple node that generate a file by dynamic file path",
   "main": "dynamic-file-path.js",
   "scripts": {
