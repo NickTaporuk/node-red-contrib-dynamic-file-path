@@ -14,12 +14,13 @@
  * limitations under the License.
  **/
 
-module.exports = function(RED) {
+module.exports = function (RED) {
     "use strict";
     var fs = require("fs-extra");
     var os = require("os");
     var path = require("path");
     var iconv = require("iconv-lite")
+
     // var mustache = require("mustache");
 
     function encode(data, enc) {
@@ -29,16 +30,12 @@ module.exports = function(RED) {
         return Buffer.from(data);
     }
 
-    function decode(data, enc) {
-        if (enc !== "none") {
-            return iconv.decode(data, enc);
-        }
-        return data.toString();
-    }
-
+    /*
+    * DynamicFileNode represents writing/deleting a file
+    * */
     function DynamicFileNode(n) {
         // Write/delete a file
-        RED.nodes.createNode(this,n);
+        RED.nodes.createNode(this, n);
         this.filename = n.filename;
         this.appendNewline = n.appendNewline;
         this.overwriteFile = n.overwriteFile.toString();
@@ -50,19 +47,19 @@ module.exports = function(RED) {
         node.closing = false;
         node.closeCallback = null;
 
-        function processMsg(msg,nodeSend, done) {
+        function processMsg(msg, nodeSend, done) {
             console.log("processMsg debug==>", msg);
             var filename = node.filename || msg.filename || "";
             var fullFilename = filename;
             if (filename && RED.settings.fileWorkingDirectory && !path.isAbsolute(filename)) {
-                fullFilename = path.resolve(path.join(RED.settings.fileWorkingDirectory,filename));
+                fullFilename = path.resolve(path.join(RED.settings.fileWorkingDirectory, filename));
             }
             if ((!node.filename) && (!node.tout)) {
-                node.tout = setTimeout(function() {
-                    node.status({fill:"grey",shape:"dot",text:filename});
+                node.tout = setTimeout(function () {
+                    node.status({fill: "grey", shape: "dot", text: filename});
                     clearTimeout(node.tout);
                     node.tout = null;
-                },333);
+                }, 333);
             }
             if (filename === "") {
                 node.warn(RED._("file.errors.nofilename"));
@@ -70,10 +67,9 @@ module.exports = function(RED) {
             } else if (node.overwriteFile === "delete") {
                 fs.unlink(fullFilename, function (err) {
                     if (err) {
-                        node.error(RED._("file.errors.deletefail",{error:err.toString()}),msg);
-                    }
-                    else {
-                        node.debug(RED._("file.status.deletedfile",{file:filename}));
+                        node.error(RED._("file.errors.deletefail", {error: err.toString()}), msg);
+                    } else {
+                        node.debug(RED._("file.status.deletedfile", {file: filename}));
                         nodeSend(msg);
                     }
                     done();
@@ -83,9 +79,8 @@ module.exports = function(RED) {
                 if (node.createDir) {
                     try {
                         fs.ensureDirSync(dir);
-                    }
-                    catch(err) {
-                        node.error(RED._("file.errors.createfail",{error:err.toString()}),msg);
+                    } catch (err) {
+                        node.error(RED._("file.errors.createfail", {error: err.toString()}), msg);
                         done();
                         return;
                     }
@@ -95,31 +90,37 @@ module.exports = function(RED) {
                 if ((typeof data === "object") && (!Buffer.isBuffer(data))) {
                     data = JSON.stringify(data);
                 }
-                if (typeof data === "boolean") { data = data.toString(); }
-                if (typeof data === "number") { data = data.toString(); }
-                if ((node.appendNewline) && (!Buffer.isBuffer(data))) { data += os.EOL; }
+                if (typeof data === "boolean") {
+                    data = data.toString();
+                }
+                if (typeof data === "number") {
+                    data = data.toString();
+                }
+                if ((node.appendNewline) && (!Buffer.isBuffer(data))) {
+                    data += os.EOL;
+                }
                 var buf;
                 if (node.encoding === "setbymsg") {
                     buf = encode(data, msg.encoding || "none");
+                } else {
+                    buf = encode(data, node.encoding);
                 }
-                else { buf = encode(data, node.encoding); }
                 if (node.overwriteFile === "true") {
-                    var wstream = fs.createWriteStream(fullFilename, { encoding:'binary', flags:'w', autoClose:true });
+                    var wstream = fs.createWriteStream(fullFilename, {encoding: 'binary', flags: 'w', autoClose: true});
                     node.wstream = wstream;
-                    wstream.on("error", function(err) {
-                        node.error(RED._("file.errors.writefail",{error:err.toString()}),msg);
+                    wstream.on("error", function (err) {
+                        node.error(RED._("file.errors.writefail", {error: err.toString()}), msg);
                         done();
                     });
-                    wstream.on("open", function() {
-                        wstream.once("close", function() {
+                    wstream.on("open", function () {
+                        wstream.once("close", function () {
                             nodeSend(msg);
                             done();
                         });
                         wstream.end(buf);
                     })
                     return;
-                }
-                else {
+                } else {
                     // Append mode
                     var recreateStream = !node.wstream || !node.filename;
                     if (node.wstream && node.wstreamIno) {
@@ -137,8 +138,7 @@ module.exports = function(RED) {
                                 delete node.wstream;
                                 delete node.wstreamIno;
                             }
-                        }
-                        catch(err) {
+                        } catch (err) {
                             // File does not exist
                             recreateStream = true;
                             node.wstream.end();
@@ -147,29 +147,32 @@ module.exports = function(RED) {
                         }
                     }
                     if (recreateStream) {
-                        node.wstream = fs.createWriteStream(fullFilename, { encoding:'binary', flags:'a', autoClose:true });
-                        node.wstream.on("open", function(fd) {
+                        node.wstream = fs.createWriteStream(fullFilename, {
+                            encoding: 'binary',
+                            flags: 'a',
+                            autoClose: true
+                        });
+                        node.wstream.on("open", function (fd) {
                             try {
                                 var stat = fs.statSync(fullFilename);
                                 node.wstreamIno = stat.ino;
-                            } catch(err) {
+                            } catch (err) {
                             }
                         });
-                        node.wstream.on("error", function(err) {
-                            node.error(RED._("file.errors.appendfail",{error:err.toString()}),msg);
+                        node.wstream.on("error", function (err) {
+                            node.error(RED._("file.errors.appendfail", {error: err.toString()}), msg);
                             done();
                         });
                     }
                     if (node.filename) {
                         // Static filename - write and reuse the stream next time
-                        node.wstream.write(buf, function() {
+                        node.wstream.write(buf, function () {
                             nodeSend(msg);
                             done();
                         });
-                    }
-                    else {
+                    } else {
                         // Dynamic filename - write and close the stream
-                        node.wstream.once("close", function() {
+                        node.wstream.once("close", function () {
                             nodeSend(msg);
                             delete node.wstream;
                             delete node.wstreamIno;
@@ -178,27 +181,25 @@ module.exports = function(RED) {
                         node.wstream.end(buf);
                     }
                 }
-            }
-            else {
+            } else {
                 done();
             }
         }
 
         function processQueue(queue) {
             var event = queue[0];
-            processMsg(event.msg, event.send, function() {
+            processMsg(event.msg, event.send, function () {
                 event.done();
                 queue.shift();
                 if (queue.length > 0) {
                     processQueue(queue);
-                }
-                else if (node.closing) {
+                } else if (node.closing) {
                     closeNode();
                 }
             });
         }
 
-        this.on("input", function(msg,nodeSend,nodeDone) {
+        this.on("input", function (msg, nodeSend, nodeDone) {
             var msgQueue = node.msgQueue;
             msgQueue.push({
                 msg: msg,
@@ -211,8 +212,7 @@ module.exports = function(RED) {
             }
             try {
                 processQueue(msgQueue);
-            }
-            catch (e) {
+            } catch (e) {
                 node.msgQueue = [];
                 if (node.closing) {
                     closeNode();
@@ -222,8 +222,12 @@ module.exports = function(RED) {
         });
 
         function closeNode() {
-            if (node.wstream) { node.wstream.end(); }
-            if (node.tout) { clearTimeout(node.tout); }
+            if (node.wstream) {
+                node.wstream.end();
+            }
+            if (node.tout) {
+                clearTimeout(node.tout);
+            }
             node.status({});
             var cb = node.closeCallback;
             node.closeCallback = null;
@@ -233,7 +237,7 @@ module.exports = function(RED) {
             }
         }
 
-        this.on('close', function(done) {
+        this.on('close', function (done) {
             if (node.closing) {
                 // already closing
                 return;
@@ -245,11 +249,11 @@ module.exports = function(RED) {
             if (node.msgQueue.length > 0) {
                 // close after queue processed
                 return;
-            }
-            else {
+            } else {
                 closeNode();
             }
         });
     }
-    RED.nodes.registerType("dynamic-file",DynamicFileNode);
+
+    RED.nodes.registerType("dynamic-file", DynamicFileNode);
 }
