@@ -20,8 +20,9 @@ module.exports = function (RED) {
     var os = require("os");
     var path = require("path");
     var iconv = require("iconv-lite")
+    var mustache = require("mustache");
 
-    // var mustache = require("mustache");
+    var baseDynamicFilePathStruct = "dynamicFilePath"
 
     function encode(data, enc) {
         if (enc !== "none") {
@@ -48,9 +49,20 @@ module.exports = function (RED) {
         node.closeCallback = null;
 
         function processMsg(msg, nodeSend, done) {
-            console.log("processMsg debug==>", msg);
+
+            if(!msg.hasOwnProperty(baseDynamicFilePathStruct)){
+                node.error(this._("dynamic-file.errors.didntFindBaseStruct", {error: "payload should include struct dynamicFilePath"}), msg);
+                done()
+            }
+            if (
+                msg.hasOwnProperty(baseDynamicFilePathStruct) &&
+                msg[baseDynamicFilePathStruct].hasOwnProperty("debug") &&
+                msg[baseDynamicFilePathStruct].debug === "true"
+            ) {
+                console.log("function processMsg debug ==> msg=%s, nodeSend=%s, done=%s", JSON.stringify(msg), nodeSend, done);
+            }
             var filename = node.filename || msg.filename || "";
-            var fullFilename = filename;
+            var fullFilename = mustache.render(filename, msg);
             if (filename && RED.settings.fileWorkingDirectory && !path.isAbsolute(filename)) {
                 fullFilename = path.resolve(path.join(RED.settings.fileWorkingDirectory, filename));
             }

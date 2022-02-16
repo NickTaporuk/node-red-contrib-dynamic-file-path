@@ -1,5 +1,10 @@
 {
   "dynamic-file": {
+    "common": {
+      "label": {
+        "name": "Name"
+      }
+    },
     "label": {
       "write": "write file",
       "read": "read file",
@@ -55,6 +60,7 @@
       "nofilename": "No filename specified",
       "invaliddelete": "Warning: Invalid delete. Please use specific delete option in config dialog.",
       "deletefail": "failed to delete file: __error__",
+      "didntFindBaseStruct": "failed to start working with dynamic file path: __error__",
       "writefail": "failed to write to file: __error__",
       "appendfail": "failed to append to file: __error__",
       "createfail": "failed to create file: __error__"

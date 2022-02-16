@@ -33,8 +33,8 @@
         </select>
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="dynamic-file.common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]dynamic-file.common.label.name">
     </div>
     <div class="form-tips"><span data-i18n="dynamic-file.tip"></span></div>
 </script>
@@ -187,7 +187,7 @@
                     return this.name || this.filename || this._("dynamic-file.label.write");
                 }
             },
-            paletteLabel: RED._("node-red:dynamic-file.label.write"),
+            paletteLabel: this._("dynamic-file.label.write"),
             labelStyle: function () {
                 return this.name ? "node_label_italic" : "";
             },
