@@ -16,7 +16,7 @@
   "keywords": [
     "node-red", "dynamic path"
   ],
-  "version": "0.1.2",
+  "version": "0.1.21",
   "description": "A simple node that generate a file by dynamic file path",
   "main": "dynamic-file-path.js",
   "scripts": {
