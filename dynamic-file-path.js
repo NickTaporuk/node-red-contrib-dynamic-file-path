@@ -51,7 +51,7 @@ module.exports = function (RED) {
         function processMsg(msg, nodeSend, done) {
 
             if (!msg.hasOwnProperty(baseDynamicFilePathStruct)) {
-                node.error(this._("dynamic-file.errors.didntFindBaseStruct", {error: "payload should include struct dynamicFilePath"}), msg);
+                node.error(RED._("dynamic-file.errors.didntFindBaseStruct", {error: "payload should include struct dynamicFilePath"}), msg);
                 done()
             }
             if (
