@@ -50,7 +50,7 @@ module.exports = function (RED) {
 
         function processMsg(msg, nodeSend, done) {
 
-            if(!msg.hasOwnProperty(baseDynamicFilePathStruct)){
+            if (!msg.hasOwnProperty(baseDynamicFilePathStruct)) {
                 node.error(this._("dynamic-file.errors.didntFindBaseStruct", {error: "payload should include struct dynamicFilePath"}), msg);
                 done()
             }
@@ -63,6 +63,14 @@ module.exports = function (RED) {
             }
             var filename = node.filename || msg.filename || "";
             var fullFilename = mustache.render(filename, msg);
+            if (
+                msg.hasOwnProperty("payload") && (typeof msg.payload !== "undefined") &&
+                msg.payload.hasOwnProperty(baseDynamicFilePathStruct) &&
+                msg.payload[baseDynamicFilePathStruct].hasOwnProperty("debug") &&
+                msg.payload[baseDynamicFilePathStruct].debug === "true"
+            ) {
+                console.log("function processMsg debug ==> msg=%s, nodeSend=%s, done=%s, fullFilename=%s", JSON.stringify(msg), nodeSend, done, fullFilename);
+            }
             if (filename && RED.settings.fileWorkingDirectory && !path.isAbsolute(filename)) {
                 fullFilename = path.resolve(path.join(RED.settings.fileWorkingDirectory, filename));
             }
