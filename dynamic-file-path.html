@@ -182,12 +182,12 @@
             icon: "file-out.svg",
             label: function () {
                 if (this.overwriteFile === "delete") {
-                    return this.name || this._("dynamic-file.label.deletelabel", {file: this.filename});
+                    return this.name || RED._("dynamic-file.label.deletelabel", {file: this.filename});
                 } else {
-                    return this.name || this.filename || this._("dynamic-file.label.write");
+                    return this.name || this.filename || RED._("dynamic-file.label.write");
                 }
             },
-            paletteLabel: this._("dynamic-file.label.write"),
+            paletteLabel: RED._("dynamic-file.label.write"),
             labelStyle: function () {
                 return this.name ? "node_label_italic" : "";
             },
