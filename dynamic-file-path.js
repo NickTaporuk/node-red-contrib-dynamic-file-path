@@ -50,19 +50,24 @@ module.exports = function (RED) {
 
         function processMsg(msg, nodeSend, done) {
 
-            if (!msg.hasOwnProperty(baseDynamicFilePathStruct)) {
+            if (
+                msg.hasOwnProperty("payload") && (typeof msg.payload !== "undefined") &&
+                !msg.payload.hasOwnProperty(baseDynamicFilePathStruct)) {
                 node.error(RED._("dynamic-file.errors.didntFindBaseStruct", {error: "payload should include struct dynamicFilePath"}), msg);
                 done()
             }
             if (
-                msg.hasOwnProperty(baseDynamicFilePathStruct) &&
-                msg[baseDynamicFilePathStruct].hasOwnProperty("debug") &&
-                msg[baseDynamicFilePathStruct].debug === "true"
+                msg.hasOwnProperty("payload") && (typeof msg.payload !== "undefined") &&
+                msg.payload.hasOwnProperty(baseDynamicFilePathStruct) &&
+                msg.payload[baseDynamicFilePathStruct].hasOwnProperty("debug") &&
+                msg.payload[baseDynamicFilePathStruct].debug === "true"
             ) {
                 console.log("function processMsg debug ==> msg=%s, nodeSend=%s, done=%s", JSON.stringify(msg), nodeSend, done);
             }
             var filename = node.filename || msg.filename || "";
             var fullFilename = mustache.render(filename, msg);
+            console.log("function processMsg fullFilename ==> fullFilename=%s", fullFilename);
+
             if (
                 msg.hasOwnProperty("payload") && (typeof msg.payload !== "undefined") &&
                 msg.payload.hasOwnProperty(baseDynamicFilePathStruct) &&
@@ -82,14 +87,14 @@ module.exports = function (RED) {
                 }, 333);
             }
             if (filename === "") {
-                node.warn(RED._("file.errors.nofilename"));
+                node.warn(RED._("dynamic-file.errors.nofilename"));
                 done();
             } else if (node.overwriteFile === "delete") {
                 fs.unlink(fullFilename, function (err) {
                     if (err) {
-                        node.error(RED._("file.errors.deletefail", {error: err.toString()}), msg);
+                        node.error(RED._("dynamic-file.errors.deletefail", {error: err.toString()}), msg);
                     } else {
-                        node.debug(RED._("file.status.deletedfile", {file: filename}));
+                        node.debug(RED._("dynamic-file.status.deletedfile", {file: filename}));
                         nodeSend(msg);
                     }
                     done();
@@ -100,7 +105,7 @@ module.exports = function (RED) {
                     try {
                         fs.ensureDirSync(dir);
                     } catch (err) {
-                        node.error(RED._("file.errors.createfail", {error: err.toString()}), msg);
+                        node.error(RED._("dynamic-file.errors.createfail", {error: err.toString()}), msg);
                         done();
                         return;
                     }
@@ -129,7 +134,7 @@ module.exports = function (RED) {
                     var wstream = fs.createWriteStream(fullFilename, {encoding: 'binary', flags: 'w', autoClose: true});
                     node.wstream = wstream;
                     wstream.on("error", function (err) {
-                        node.error(RED._("file.errors.writefail", {error: err.toString()}), msg);
+                        node.error(RED._("dynamic-file.errors.writefail", {error: err.toString()}), msg);
                         done();
                     });
                     wstream.on("open", function () {
@@ -180,7 +185,7 @@ module.exports = function (RED) {
                             }
                         });
                         node.wstream.on("error", function (err) {
-                            node.error(RED._("file.errors.appendfail", {error: err.toString()}), msg);
+                            node.error(RED._("dynamic-file.errors.appendfail", {error: err.toString()}), msg);
                             done();
                         });
                     }

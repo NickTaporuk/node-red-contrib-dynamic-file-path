@@ -11,12 +11,12 @@
     "url": "https://github.com/NickTaporuk/node-red-contrib-dynamic-file-path.git"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12"
   },
   "keywords": [
     "node-red", "dynamic path"
   ],
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "A simple node that generate a file by dynamic file path",
   "main": "dynamic-file-path.js",
   "scripts": {
